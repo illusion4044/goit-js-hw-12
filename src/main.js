@@ -60,7 +60,7 @@ const loadMoreImages = async () => {
         if (page + 1 >= 15) {
             loadMoreBtnEl.classList.add('is-hidden');
             iziToast.show({
-                message: "This is the last page of images.",
+                message: "We're sorry, but you've reached the end of search results.",
                 position: 'topRight',
                 timeout: 2000,
                 color: 'blue',
