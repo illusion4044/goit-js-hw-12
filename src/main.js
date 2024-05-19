@@ -13,7 +13,7 @@ const loaderEl = document.querySelector('.js-loader');
 let lightbox;
 let searchQuery = '';
 let page = 1;
-
+let totalPages = 0;
 
 const onSearchFormSubmit = async event => {
     event.preventDefault();
@@ -38,6 +38,7 @@ const onSearchFormSubmit = async event => {
 
     try {
         const imagesData = await fetchPhotosByQuery(searchQuery, page);
+        totalPages = Math.ceil(imagesData.totalHits / 15);
         displayImages(imagesData);
     } catch (error) {
         console.error('Error fetching photos:', error);
@@ -57,7 +58,7 @@ const loadMoreImages = async () => {
     try {
         const imagesData = await fetchPhotosByQuery(searchQuery, page + 1);
         displayImages(imagesData, true);
-        if (page + 1 >= 15) {
+        if (page + 1 >= totalPages) {
             loadMoreBtnEl.classList.add('is-hidden');
             iziToast.show({
                 message: "We're sorry, but you've reached the end of search results.",
@@ -109,9 +110,9 @@ const displayImages = (imagesData, append = false) => {
 
     if (imagesData.hits.length < 15 || page * 15 >= imagesData.totalHits) {
         loadMoreBtnEl.classList.add('is-hidden');
-        if (page * 15 >= imagesData.totalHits) {
+        if (page * 15 >= imagesData.totalHits && totalPages > 1) {
             iziToast.show({
-                message: "Sorry, there are no images matching your search query. Please try again!",
+                message: "We're sorry, but you've reached the end of search results.",
                 position: 'topRight',
                 timeout: 2000,
                 color: 'blue',
@@ -132,4 +133,4 @@ const displayImages = (imagesData, append = false) => {
 };
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);
-loadMoreBtnEl.addEventListener('click',  loadMoreImages);
+loadMoreBtnEl.addEventListener('click', loadMoreImages);
