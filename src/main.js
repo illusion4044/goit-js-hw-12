@@ -14,7 +14,9 @@ let lightbox;
 let searchQuery = '';
 let page = 1;
 
-loadMoreBtnEl.classList.add('is-hidden');
+document.addEventListener('DOMContentLoaded', () => {
+    loadMoreBtnEl.classList.add('is-hidden');
+});
 
 const onSearchFormSubmit = async event => {
     event.preventDefault();
