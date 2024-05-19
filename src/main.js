@@ -14,9 +14,6 @@ let lightbox;
 let searchQuery = '';
 let page = 1;
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadMoreBtnEl.classList.add('is-hidden');
-});
 
 const onSearchFormSubmit = async event => {
     event.preventDefault();
@@ -56,12 +53,21 @@ const onSearchFormSubmit = async event => {
 };
 
 const loadMoreImages = async () => {
-    page += 1;
     loaderEl.classList.remove('is-hidden');
-
     try {
-        const imagesData = await fetchPhotosByQuery(searchQuery, page);
+        const imagesData = await fetchPhotosByQuery(searchQuery, page + 1);
         displayImages(imagesData, true);
+        if (page + 1 >= 15) {
+            loadMoreBtnEl.classList.add('is-hidden');
+            iziToast.show({
+                message: "This is the last page of images.",
+                position: 'topRight',
+                timeout: 2000,
+                color: 'blue',
+            });
+        } else {
+            page += 1;
+        }
     } catch (error) {
         console.error('Error fetching photos:', error);
         iziToast.show({
