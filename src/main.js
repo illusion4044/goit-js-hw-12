@@ -58,7 +58,8 @@ const loadMoreImages = async () => {
     try {
         const imagesData = await fetchPhotosByQuery(searchQuery, page + 1);
         displayImages(imagesData, true);
-        if (page + 1 >= totalPages) {
+        page += 1;
+        if (page >= totalPages) {
             loadMoreBtnEl.classList.add('is-hidden');
             iziToast.show({
                 message: "We're sorry, but you've reached the end of search results.",
@@ -66,8 +67,6 @@ const loadMoreImages = async () => {
                 timeout: 2000,
                 color: 'blue',
             });
-        } else {
-            page += 1;
         }
     } catch (error) {
         console.error('Error fetching photos:', error);
@@ -108,16 +107,14 @@ const displayImages = (imagesData, append = false) => {
         captionDelay: 250,
     });
 
-    if (imagesData.hits.length < 15 || page * 15 >= imagesData.totalHits) {
+    if (page >= totalPages) {
         loadMoreBtnEl.classList.add('is-hidden');
-        if (page * 15 >= imagesData.totalHits && totalPages > 1) {
-            iziToast.show({
-                message: "We're sorry, but you've reached the end of search results.",
-                position: 'topRight',
-                timeout: 2000,
-                color: 'blue',
-            });
-        }
+        iziToast.show({
+            message: "We're sorry, but you've reached the end of search results.",
+            position: 'topRight',
+            timeout: 2000,
+            color: 'blue',
+        });
     } else {
         loadMoreBtnEl.classList.remove('is-hidden');
     }
